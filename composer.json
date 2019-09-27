@@ -1,0 +1,55 @@
+{
+  "name": "bavix/laravel-wallet-vacuum",
+  "description": "Addition to the package laravel-wallet.",
+  "keywords": [
+    "vacuum",
+    "laravel",
+    "laravel5",
+    "credits",
+    "bavix",
+    "currency",
+    "laravel5-package",
+    "laravel-wallet",
+    "virtual",
+    "wallet",
+    "payments"
+  ],
+  "minimum-stability": "stable",
+  "homepage": "https://github.com/bavix/laravel-wallet",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Babichev Maxim",
+      "email": "info@babichev.net"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "bavix/laravel-wallet": "dev-master"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^4.0",
+    "phpstan/phpstan": "^0.11",
+    "phpunit/phpunit": "^8.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bavix\\WalletVacuum\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Bavix\\WalletVacuum\\Test\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Bavix\\WalletVacuum\\VacuumServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
