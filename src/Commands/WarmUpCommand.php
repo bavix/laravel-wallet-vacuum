@@ -5,13 +5,13 @@ namespace Bavix\WalletVacuum\Commands;
 use Bavix\Wallet\Models\Wallet;
 use Illuminate\Console\Command;
 
-class HartUpCommand extends Command
+class WarmUpCommand extends Command
 {
 
     /**
      * @var string
      */
-    protected $name = 'wallet:hart-up';
+    protected $name = 'wallet:warm-up';
 
     /**
      * @var string
