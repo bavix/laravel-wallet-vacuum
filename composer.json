@@ -4,11 +4,13 @@
   "keywords": [
     "vacuum",
     "laravel",
-    "laravel5",
+    "laravel6",
+    "laravel7",
     "credits",
     "bavix",
     "currency",
-    "laravel5-package",
+    "laravel6-package",
+    "laravel7-package",
     "laravel-wallet",
     "virtual",
     "wallet",
@@ -25,12 +27,13 @@
   ],
   "require": {
     "php": "^7.2",
-    "bavix/laravel-wallet": "^4.0"
+    "bavix/laravel-wallet": "5.0.x-dev"
   },
   "require-dev": {
-    "orchestra/testbench": "^4.0",
-    "phpstan/phpstan": "^0.11",
-    "phpunit/phpunit": "^8.3"
+    "infection/infection": "^0.15",
+    "orchestra/testbench": "^4.0|^5.0",
+    "phpstan/phpstan": "^0.12",
+    "phpunit/phpunit": "^8.0|^9.0"
   },
   "autoload": {
     "psr-4": {

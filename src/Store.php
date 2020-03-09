@@ -15,11 +15,11 @@ class Store implements Storable
      *
      * @inheritDoc
      */
-    public function getBalance($object): int
+    public function getBalance($object)
     {
         return Cache::get(
             app(StoreService::class)->getCacheKey($object),
-            (int)app(WalletService::class)
+            app(WalletService::class)
                 ->getWallet($object)
                 ->getOriginal('balance', 0)
         );
@@ -30,7 +30,7 @@ class Store implements Storable
      *
      * @inheritDoc
      */
-    public function incBalance($object, int $amount): int
+    public function incBalance($object, $amount)
     {
         $key = app(StoreService::class)
             ->getCacheKey($object);
@@ -55,7 +55,7 @@ class Store implements Storable
      *
      * @inheritDoc
      */
-    public function setBalance($object, int $amount): bool
+    public function setBalance($object, $amount): bool
     {
         return Cache::put(
             app(StoreService::class)->getCacheKey($object),
