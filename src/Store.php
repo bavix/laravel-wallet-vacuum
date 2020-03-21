@@ -2,12 +2,12 @@
 
 namespace Bavix\WalletVacuum;
 
-use Bavix\Wallet\Interfaces\Storable;
-use Bavix\Wallet\Services\WalletService;
+use Bavix\Wallet\Interfaces\Mathable;
+use Bavix\Wallet\Simple\Store as Storable;
 use Bavix\WalletVacuum\Services\StoreService;
 use Illuminate\Support\Facades\Cache;
 
-class Store implements Storable
+class Store extends Storable
 {
 
     /**
@@ -15,13 +15,11 @@ class Store implements Storable
      *
      * @inheritDoc
      */
-    public function getBalance($object): int
+    public function getBalance($object)
     {
         return Cache::get(
             app(StoreService::class)->getCacheKey($object),
-            (int)app(WalletService::class)
-                ->getWallet($object)
-                ->getOriginal('balance', 0)
+            parent::getBalance($object)
         );
     }
 
@@ -30,7 +28,7 @@ class Store implements Storable
      *
      * @inheritDoc
      */
-    public function incBalance($object, int $amount): int
+    public function incBalance($object, $amount)
     {
         $key = app(StoreService::class)
             ->getCacheKey($object);
@@ -39,6 +37,7 @@ class Store implements Storable
             $this->setBalance($object, $this->getBalance($object));
         }
 
+        $this->balanceSheets = []; // cleanup
         Cache::increment($key, $amount);
 
         /**
@@ -55,11 +54,12 @@ class Store implements Storable
      *
      * @inheritDoc
      */
-    public function setBalance($object, int $amount): bool
+    public function setBalance($object, $amount): bool
     {
+        $this->balanceSheets = []; // cleanup
         return Cache::put(
             app(StoreService::class)->getCacheKey($object),
-            $amount,
+            app(Mathable::class)->round($amount),
             600
         );
     }
