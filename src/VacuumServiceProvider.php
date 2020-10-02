@@ -23,6 +23,12 @@ class VacuumServiceProvider extends ServiceProvider
         }
 
         $this->commands([WarmUpCommand::class]);
+
+        if (function_exists('config_path')) {
+            $this->publishes([
+                dirname(__DIR__).'/config/config.php' => config_path('wallet-vacuum.php'),
+            ], 'laravel-wallet-vacuum-config');
+        }
     }
 
     /**

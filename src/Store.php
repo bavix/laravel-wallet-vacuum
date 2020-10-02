@@ -18,11 +18,17 @@ class Store implements Storable
     protected $tags;
 
     /**
+     * @var int
+     */
+    protected $ttl;
+
+    /**
      * Store constructor.
      */
     public function __construct()
     {
         $this->tags = config('wallet-vacuum.tags', ['wallets', 'vacuum']);
+        $this->ttl = config('wallet-vacuum.ttl', 600);
     }
 
     /**
@@ -35,7 +41,9 @@ class Store implements Storable
         $key = app(StoreService::class)
             ->getCacheKey($object);
 
-        $balance = $this->getCache()->get($key);
+        $balance = $this->taggedCache()
+            ->get($key);
+
         if ($balance === null) {
             $balance = (new SimpleStore())
                 ->getBalance($object);
@@ -54,11 +62,11 @@ class Store implements Storable
         $key = app(StoreService::class)
             ->getCacheKey($object);
 
-        if (!$this->getCache()->has($key)) {
+        if (!$this->taggedCache()->has($key)) {
             $this->setBalance($object, $this->getBalance($object));
         }
 
-        $this->getCache()->increment($key, $amount);
+        $this->taggedCache()->increment($key, $amount);
 
         /**
          * When your project grows to high loads and situations arise with a race condition,
@@ -76,10 +84,10 @@ class Store implements Storable
      */
     public function setBalance($object, $amount): bool
     {
-        return $this->getCache()->put(
+        return $this->taggedCache()->put(
             app(StoreService::class)->getCacheKey($object),
             app(Mathable::class)->round($amount),
-            600
+            $this->ttl
         );
     }
 
@@ -88,13 +96,13 @@ class Store implements Storable
      */
     public function fresh(): bool
     {
-        return $this->getCache()->flush();
+        return $this->taggedCache()->flush();
     }
 
     /**
      * @return TaggedCache
      */
-    public function getCache(): TaggedCache
+    public function taggedCache(): TaggedCache
     {
         return Cache::tags($this->tags);
     }

@@ -51,7 +51,7 @@ class VacuumTest extends TestCase
              * @var Store $store
              */
             $store = app(Storable::class);
-            self::assertTrue($store->getCache()->put($key, $amount + 100));
+            self::assertTrue($store->taggedCache()->put($key, $amount + 100));
             self::assertNotEquals($amount, $buyer->balance);
             self::assertEquals($amount + 100, $buyer->balance);
 
@@ -85,7 +85,7 @@ class VacuumTest extends TestCase
              * @var Store $store
              */
             $store = app(Storable::class);
-            self::assertTrue($store->getCache()->put($key, $amount + 100));
+            self::assertTrue($store->taggedCache()->put($key, $amount + 100));
             self::assertNotEquals($amount, $buyer->balance);
             self::assertEquals($amount + 100, $buyer->balance);
         }
