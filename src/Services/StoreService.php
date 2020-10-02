@@ -7,7 +7,6 @@ use Bavix\Wallet\Services\WalletService;
 
 class StoreService
 {
-
     /**
      * @param Wallet $object
      * @return string
@@ -18,5 +17,4 @@ class StoreService
             ->getWallet($object)
             ->getKey();
     }
-
 }
