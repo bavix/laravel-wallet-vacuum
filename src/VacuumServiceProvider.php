@@ -23,6 +23,17 @@ class VacuumServiceProvider extends ServiceProvider
         }
 
         $this->commands([WarmUpCommand::class]);
+    }
+
+    /**
+     * @return void
+     */
+    public function register(): void
+    {
+        $this->mergeConfigFrom(
+            dirname(__DIR__).'/config/config.php',
+            'wallet-vacuum'
+        );
 
         $this->app->singleton(StoreService::class, StoreService::class);
         $this->app->singleton(Storable::class, Store::class);

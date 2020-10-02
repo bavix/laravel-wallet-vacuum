@@ -3,12 +3,27 @@
 namespace Bavix\WalletVacuum;
 
 use Bavix\Wallet\Interfaces\Mathable;
-use Bavix\Wallet\Simple\Store as Storable;
+use Bavix\Wallet\Interfaces\Storable;
 use Bavix\WalletVacuum\Services\StoreService;
+use Bavix\Wallet\Simple\Store as SimpleStore;
+use Illuminate\Cache\TaggedCache;
 use Illuminate\Support\Facades\Cache;
 
-class Store extends Storable
+class Store implements Storable
 {
+
+    /**
+     * @var array
+     */
+    protected $tags;
+
+    /**
+     * Store constructor.
+     */
+    public function __construct()
+    {
+        $this->tags = config('wallet-vacuum.tags', ['wallets', 'vacuum']);
+    }
 
     /**
      * Get the balance from the cache.
@@ -17,10 +32,16 @@ class Store extends Storable
      */
     public function getBalance($object)
     {
-        return Cache::get(
-            app(StoreService::class)->getCacheKey($object),
-            parent::getBalance($object)
-        );
+        $key = app(StoreService::class)
+            ->getCacheKey($object);
+
+        $balance = $this->getCache()->get($key);
+        if ($balance === null) {
+            $balance = (new SimpleStore())
+                ->getBalance($object);
+        }
+
+        return $balance;
     }
 
     /**
@@ -33,12 +54,11 @@ class Store extends Storable
         $key = app(StoreService::class)
             ->getCacheKey($object);
 
-        if (!Cache::has($key)) {
+        if (!$this->getCache()->has($key)) {
             $this->setBalance($object, $this->getBalance($object));
         }
 
-        $this->balanceSheets = []; // cleanup
-        Cache::increment($key, $amount);
+        $this->getCache()->increment($key, $amount);
 
         /**
          * When your project grows to high loads and situations arise with a race condition,
@@ -56,12 +76,27 @@ class Store extends Storable
      */
     public function setBalance($object, $amount): bool
     {
-        $this->balanceSheets = []; // cleanup
-        return Cache::put(
+        return $this->getCache()->put(
             app(StoreService::class)->getCacheKey($object),
             app(Mathable::class)->round($amount),
             600
         );
+    }
+
+    /**
+     * @return bool
+     */
+    public function fresh(): bool
+    {
+        return $this->getCache()->flush();
+    }
+
+    /**
+     * @return TaggedCache
+     */
+    public function getCache(): TaggedCache
+    {
+        return Cache::tags($this->tags);
     }
 
 }
