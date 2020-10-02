@@ -4,14 +4,13 @@ namespace Bavix\WalletVacuum;
 
 use Bavix\Wallet\Interfaces\Mathable;
 use Bavix\Wallet\Interfaces\Storable;
-use Bavix\WalletVacuum\Services\StoreService;
 use Bavix\Wallet\Simple\Store as SimpleStore;
+use Bavix\WalletVacuum\Services\StoreService;
 use Illuminate\Cache\TaggedCache;
 use Illuminate\Support\Facades\Cache;
 
 class Store implements Storable
 {
-
     /**
      * @var array
      */
@@ -34,7 +33,7 @@ class Store implements Storable
     /**
      * Get the balance from the cache.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getBalance($object)
     {
@@ -53,16 +52,16 @@ class Store implements Storable
     }
 
     /**
-     * Increases the wallet balance in the cache array
+     * Increases the wallet balance in the cache array.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function incBalance($object, $amount)
     {
         $key = app(StoreService::class)
             ->getCacheKey($object);
 
-        if (!$this->taggedCache()->has($key)) {
+        if (! $this->taggedCache()->has($key)) {
             $this->setBalance($object, $this->getBalance($object));
         }
 
@@ -78,9 +77,9 @@ class Store implements Storable
     }
 
     /**
-     * sets the cache value directly
+     * sets the cache value directly.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setBalance($object, $amount): bool
     {
@@ -106,5 +105,4 @@ class Store implements Storable
     {
         return Cache::tags($this->tags);
     }
-
 }

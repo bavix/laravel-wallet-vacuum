@@ -2,14 +2,13 @@
 
 namespace Bavix\WalletVacuum;
 
+use Bavix\Wallet\Interfaces\Storable;
 use Bavix\WalletVacuum\Commands\WarmUpCommand;
 use Bavix\WalletVacuum\Services\StoreService;
 use Illuminate\Support\ServiceProvider;
-use Bavix\Wallet\Interfaces\Storable;
 
 class VacuumServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap services.
      *
@@ -18,7 +17,7 @@ class VacuumServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             return;
         }
 
@@ -44,5 +43,4 @@ class VacuumServiceProvider extends ServiceProvider
         $this->app->singleton(StoreService::class, StoreService::class);
         $this->app->singleton(Storable::class, Store::class);
     }
-
 }
