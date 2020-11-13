@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - support laravel-wallet v5.0
 
-## [0.0.2] - 2019-10-06
+## [0.0.1] - 2019-10-06
 ### Added
 - support laravel-wallet v4.0
 
