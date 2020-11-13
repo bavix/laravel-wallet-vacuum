@@ -3,42 +3,69 @@
 namespace Bavix\WalletVacuum;
 
 use Bavix\Wallet\Interfaces\Mathable;
-use Bavix\Wallet\Simple\Store as Storable;
+use Bavix\Wallet\Interfaces\Storable;
+use Bavix\Wallet\Simple\Store as SimpleStore;
 use Bavix\WalletVacuum\Services\StoreService;
+use Illuminate\Cache\TaggedCache;
 use Illuminate\Support\Facades\Cache;
 
-class Store extends Storable
+class Store implements Storable
 {
+    /**
+     * @var array
+     */
+    protected $tags;
+
+    /**
+     * @var int
+     */
+    protected $ttl;
+
+    /**
+     * Store constructor.
+     */
+    public function __construct()
+    {
+        $this->tags = config('wallet-vacuum.tags', ['wallets', 'vacuum']);
+        $this->ttl = config('wallet-vacuum.ttl', 600);
+    }
 
     /**
      * Get the balance from the cache.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getBalance($object)
     {
-        return Cache::get(
-            app(StoreService::class)->getCacheKey($object),
-            parent::getBalance($object)
-        );
+        $key = app(StoreService::class)
+            ->getCacheKey($object);
+
+        $balance = $this->taggedCache()
+            ->get($key);
+
+        if ($balance === null) {
+            $balance = (new SimpleStore())
+                ->getBalance($object);
+        }
+
+        return $balance;
     }
 
     /**
-     * Increases the wallet balance in the cache array
+     * Increases the wallet balance in the cache array.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function incBalance($object, $amount)
     {
         $key = app(StoreService::class)
             ->getCacheKey($object);
 
-        if (!Cache::has($key)) {
+        if (! $this->taggedCache()->has($key)) {
             $this->setBalance($object, $this->getBalance($object));
         }
 
-        $this->balanceSheets = []; // cleanup
-        Cache::increment($key, $amount);
+        $this->taggedCache()->increment($key, $amount);
 
         /**
          * When your project grows to high loads and situations arise with a race condition,
@@ -50,18 +77,32 @@ class Store extends Storable
     }
 
     /**
-     * sets the cache value directly
+     * sets the cache value directly.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setBalance($object, $amount): bool
     {
-        $this->balanceSheets = []; // cleanup
-        return Cache::put(
+        return $this->taggedCache()->put(
             app(StoreService::class)->getCacheKey($object),
             app(Mathable::class)->round($amount),
-            600
+            $this->ttl
         );
     }
 
+    /**
+     * @return bool
+     */
+    public function fresh(): bool
+    {
+        return $this->taggedCache()->flush();
+    }
+
+    /**
+     * @return TaggedCache
+     */
+    public function taggedCache(): TaggedCache
+    {
+        return Cache::tags($this->tags);
+    }
 }

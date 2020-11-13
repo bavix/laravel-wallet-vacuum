@@ -26,14 +26,16 @@
     }
   ],
   "require": {
-    "php": "^7.2",
-    "bavix/laravel-wallet": "^5.0"
+    "php": "^7.3|^8.0",
+    "bavix/laravel-wallet": "^6.0"
   },
   "require-dev": {
-    "infection/infection": "^0.15",
-    "orchestra/testbench": "^4.0|^5.0",
+    "cknow/laravel-money": "^6.1",
+    "infection/infection": "~0.17",
+    "orchestra/testbench": "^6.0",
     "phpstan/phpstan": "^0.12",
-    "phpunit/phpunit": "^8.0|^9.0"
+    "phpunit/phpunit": "^9.4",
+    "laravel/cashier": "^12.5"
   },
   "autoload": {
     "psr-4": {
@@ -42,13 +44,11 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Bavix\\WalletVacuum\\Test\\": "tests/"
+      "Bavix\\WalletVacuum\\Test\\": "tests/",
+      "Bavix\\Wallet\\Test\\": "vendor/bavix/laravel-wallet/tests/"
     }
   },
   "extra": {
-    "branch-alias": {
-      "dev-develop": "1.0.x-dev"
-    },
     "laravel": {
       "providers": [
         "Bavix\\WalletVacuum\\VacuumServiceProvider"
