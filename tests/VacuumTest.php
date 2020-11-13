@@ -10,7 +10,6 @@ use Bavix\WalletVacuum\Store;
 
 class VacuumTest extends TestCase
 {
-
     /**
      * @return void
      * @throws
@@ -97,5 +96,4 @@ class VacuumTest extends TestCase
             self::assertEquals($amounts[$buyer->getKey()], $buyer->balance);
         }
     }
-
 }

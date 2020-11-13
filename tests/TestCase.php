@@ -7,7 +7,6 @@ use Illuminate\Foundation\Application;
 
 class TestCase extends \Bavix\Wallet\Test\TestCase
 {
-
     /**
      * @param Application $app
      * @return array
@@ -15,8 +14,7 @@ class TestCase extends \Bavix\Wallet\Test\TestCase
     protected function getPackageProviders($app): array
     {
         return array_merge(parent::getPackageProviders($app), [
-            VacuumServiceProvider::class
+            VacuumServiceProvider::class,
         ]);
     }
-
 }

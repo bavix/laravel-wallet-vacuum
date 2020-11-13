@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 
 class WarmUpCommand extends Command
 {
-
     /**
      * @var string
      */
@@ -27,5 +26,4 @@ class WarmUpCommand extends Command
             return $wallet->refreshBalance();
         });
     }
-
 }
