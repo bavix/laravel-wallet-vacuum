@@ -10,8 +10,10 @@
     </report>
   </coverage>
   <testsuites>
-    <testsuite name="Wallet Test Suite">
+    <testsuite name="Vacuum Test Suite">
       <directory>tests</directory>
+    </testsuite>
+    <testsuite name="Wallet Test Suite">
       <directory>vendor/bavix/laravel-wallet/tests</directory>
     </testsuite>
   </testsuites>
