@@ -11,8 +11,6 @@
 
 laravel-wallet-vacuum - Addition to the package laravel-wallet.
 
-> If the driver of your choice is redis, then support starts from version 6.x +.
-
 * **Vendor**: bavix
 * **Package**: laravel-wallet-vacuum
 * **Version**: [![Latest Stable Version](https://poser.pugx.org/bavix/laravel-wallet-vacuum/v/stable)](https://packagist.org/packages/bavix/laravel-wallet-vacuum)
