@@ -45,7 +45,7 @@ class VacuumTest extends TestCase
         $buyer->wallet->decimal_places = 6;
         $buyer->wallet->save();
 
-        $amount = "1000000000000000000.000000";
+        $amount = '1000000000000000000.000000';
         $buyer->wallet->depositFloat($amount);
         self::assertEquals(0, $math->compare($amount, $buyer->wallet->balanceFloat));
     }
