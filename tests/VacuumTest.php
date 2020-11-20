@@ -35,21 +35,19 @@ class VacuumTest extends TestCase
     public function testHasWalletFloat(): void
     {
         /**
-         * @var Buyer[] $buyers
+         * @var Buyer $buyer
          */
-        $buyers = BuyerFactory::times(5)->create();
+        $buyer = BuyerFactory::new()->create();
         $math = app(Mathable::class);
-        foreach ($buyers as $buyer) {
-            /**
-             * @see https://github.com/bavix/laravel-wallet-vacuum/issues/5
-             */
-            $buyer->wallet->decimal_places = 6;
-            $buyer->wallet->save();
+        /**
+         * @see https://github.com/bavix/laravel-wallet-vacuum/issues/5
+         */
+        $buyer->wallet->decimal_places = 6;
+        $buyer->wallet->save();
 
-            $amount = random_int(1, 1000) + .1;
-            $buyer->wallet->depositFloat($amount);
-            self::assertEquals(0, $math->compare($amount, $buyer->wallet->balanceFloat));
-        }
+        $amount = "1000000000000000000.000000";
+        $buyer->wallet->depositFloat($amount);
+        self::assertEquals(0, $math->compare($amount, $buyer->wallet->balanceFloat));
     }
 
     /**

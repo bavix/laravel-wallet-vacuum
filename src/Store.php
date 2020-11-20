@@ -4,6 +4,7 @@ namespace Bavix\WalletVacuum;
 
 use Bavix\Wallet\Interfaces\Mathable;
 use Bavix\Wallet\Interfaces\Storable;
+use Bavix\Wallet\Services\LockService;
 use Bavix\Wallet\Simple\Store as SimpleStore;
 use Bavix\WalletVacuum\Services\StoreService;
 use Illuminate\Cache\TaggedCache;
@@ -58,22 +59,21 @@ class Store implements Storable
      */
     public function incBalance($object, $amount)
     {
-        $key = app(StoreService::class)
-            ->getCacheKey($object);
+        return app(LockService::class)->lock($this, __FUNCTION__, function () use ($object, $amount) {
+            $balance = $this->getBalance($object);
+            $newBalance = app(Mathable::class)
+                ->add($balance, $amount);
 
-        if (! $this->taggedCache()->has($key)) {
-            $this->setBalance($object, $this->getBalance($object));
-        }
+            $this->setBalance($object, $newBalance);
 
-        $this->taggedCache()->increment($key, $amount);
-
-        /**
-         * When your project grows to high loads and situations arise with a race condition,
-         * you understand that an extra request to
-         * the cache will save you from many problems when
-         * checking the balance.
-         */
-        return $this->getBalance($object);
+            /**
+             * When your project grows to high loads and situations arise with a race condition,
+             * you understand that an extra request to
+             * the cache will save you from many problems when
+             * checking the balance.
+             */
+            return $newBalance;
+        });
     }
 
     /**
