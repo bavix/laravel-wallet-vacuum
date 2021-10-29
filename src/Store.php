@@ -4,6 +4,7 @@ namespace Bavix\WalletVacuum;
 
 use Bavix\Wallet\Interfaces\Mathable;
 use Bavix\Wallet\Interfaces\Storable;
+use Bavix\Wallet\Internal\StorageInterface;
 use Bavix\Wallet\Services\LockService;
 use Bavix\Wallet\Simple\Store as SimpleStore;
 use Bavix\WalletVacuum\Services\StoreService;
@@ -95,6 +96,8 @@ class Store implements Storable
      */
     public function fresh(): bool
     {
+        app(StorageInterface::class)->flush();
+
         return $this->taggedCache()->flush();
     }
 
